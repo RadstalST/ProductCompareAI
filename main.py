@@ -57,7 +57,7 @@ if submit_button:
     st.header(f"Customer Review of {product1}")
     st.write(review["output"])
     st.divider()
-	st.header(f"Customer Review of {product2}")
+    st.header(f"Customer Review of {product2}")
     review2_prompt = f"customer review of {product2}"
     review2 = execute_review(review2_prompt)
     st.write(review2["output"])

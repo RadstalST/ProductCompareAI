@@ -134,7 +134,8 @@ plan_review_product = PromptTemplate(
     1. search for reviews on website
     2. you need to find top reviews with most helpful information based on votes
 	3. Show reviews as a result
-    
+    """)
+
 introduction_prompt = PromptTemplate(
     input_variables=["title", "chat_history"],
     template="""
@@ -155,16 +156,6 @@ vs_paragraph_prompt = PromptTemplate(
     1. **Feature1**
 
     paragraph comparing Feature1 between product A and product B
-    Tools to use:+""" + tools_str + """
-
-    REMEMBER: Keep in mind that you don't have information about current date, temperature, informations after September 2021. Because of that you need to use tools to find them.
-
-        Output look like this:
-    '''
-        Product: {input}
-        Top reviews: [reviews of product]
-    """
-)
 
     2. ....
     ...
