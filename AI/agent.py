@@ -4,25 +4,39 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationChain
 
 from AI.tools import Tools
-from AI.prompt_template import prompt,plan_prompt
+from AI.prompt_template import prompt,plan_prompt,plan_features_compare,execute_features_compare
 
 
 class Agent():
-    def __init__(self,openai_api_key=None,gpt_model_str="gpt-3.5-turbo") -> None:
+    def __init__(self,openai_api_key=None,gpt_model_str="gpt-3.5-turbo",max_iterations=10) -> None:
 
         self.tools = Tools().get_tools()
         self.llm = llm = ChatOpenAI(temperature=0,model=gpt_model_str,openai_api_key=openai_api_key)
         self.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-
+        # AGENTS
         self.agent = initialize_agent(
             agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
             tools=self.tools,
             llm=llm,
             verbose=True, # verbose option is for printing logs (only for development)
-            max_iterations=10,
+            max_iterations=max_iterations,
             prompt=prompt,
             memory=self.memory,
         )
+
+        # for features comparison plan execution
+        self.features_agent = initialize_agent(
+            agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
+            tools=self.tools,
+            llm=llm,
+            verbose=True, # verbose option is for printing logs (only for development)
+            max_iterations=max_iterations,
+            prompt=plan_features_compare,
+            memory=self.memory,
+        )
+
+        # prompt
+
         self.plan_chain = ConversationChain(
             llm=llm,
             memory=self.memory,
@@ -31,9 +45,27 @@ class Agent():
             output_key="output",
         )
 
+        self.compare_plan_chain = ConversationChain(
+            llm=llm,
+            memory=self.memory,
+            input_key="input",
+            prompt=execute_features_compare,
+            output_key="output",
+        )
+
     def execute(self,prompt):
         #formulate plan
-        plan_result = self.plan_chain.run(prompt)
-        # Agent execution
-        res = self.agent(plan_result)
+        search_plan = self.agent(prompt)
+        plan_result = self.plan_chain.run(input = search_plan["output"])
+        #plan for features comparison
+        features_compare_plan = self.features_agent(plan_result)
+        features_table = self.compare_plan_chain.run(input = features_compare_plan["output"])
+
+
+        res = {
+            "search_plan":plan_result,
+            "features_compare_plan":features_compare_plan,
+            "features_table":features_table
+        }
+
         return res

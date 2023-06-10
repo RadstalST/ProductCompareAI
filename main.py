@@ -4,8 +4,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-
+import json
 from AI.agent import Agent
+
+
 
 with st.sidebar:
     OPEN_AI_API_KEY = st.text_input('OPEN AI KEY',type="password")
@@ -35,11 +37,18 @@ if submit_button:
     st.write(f'Product 1: {product1}')
     st.write(f'Product 2: {product2}')
     st.write('Comparing the products...')
-    prompt = f"compare {product1} and  {product2}"
+    prompt = f"compare {product1} and {product2}"
     st.write(prompt)
     st.divider()
     agent_res = execute_agent(prompt)
     st.write(agent_res)
+
+    comparison_df = pd.DataFrame(json.loads(
+        agent_res["features_table"].replace("Output:","").strip()
+        )).set_index("product").T
+    
+    # st table
+    st.table(comparison_df)
 
 
 # go get some data on the internet
