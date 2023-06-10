@@ -31,7 +31,10 @@ def execute_review(prompt):
 def execute_review1(prompt):
 	rev = agent.review(prompt)
 	return rev
-
+@st.cache_data
+def execute_specific_feature(prompt):
+    specific_feature = agent.feature(prompt)
+    return specific_feature
 
 # Title of the app
 st.title('Product Comparison')
@@ -42,6 +45,7 @@ st.info('This app compares the products based on the features')
 with st.form(key='input_form'):
     product1 = st.text_input('Enter the name of the product 1',value="apple vision pro")
     product2 = st.text_input('Enter the name of the product 2',value="Meta Quest Pro")
+    feature = st.text_input('Enter specific feature you want to compare',value="optional")
     submit_button = st.form_submit_button(label='Submit')
 if not OPEN_AI_API_KEY:
     st.error("Please enter the Open AI API Key")
@@ -54,14 +58,15 @@ if submit_button:
     prompt = f"compare {product1} and {product2}"
     st.write(prompt)
     st.divider()
-    agent_res = execute_agent(prompt)
-    with st.expander("Debug"):
-        st.write(agent_res)
+    # agent_res = execute_agent(prompt)
+    # with st.expander("Debug"):
+    #     st.write(agent_res)
+	
     
 
 
 
-    # introduction section
+    introduction section
     st.title(f"{agent_res['title']}")
 
     st.header(f"Introduction :") #might add catchy clickbait title
@@ -72,6 +77,13 @@ if submit_button:
     st.write(f"Here is the comparison between {product1} and {product2}")
     # comparison section
     st.markdown(agent_res["features_table"].strip())
+    if feature!='optional':
+        st.subheader(f"Compare based on requested feature: {feature}")
+        feat_prompt = f"(compare {product1} and {product2} {feature}"
+        result_feature = execute_specific_feature(feat_prompt)
+        st.write(result_feature["output"])
+
+
 
 
 
@@ -91,10 +103,9 @@ if submit_button:
     # reviews section
     review1 = f"customer review of {product1}"
     review = execute_review(review1)
-    st.write(review)
-    st.header(f"Customer Review of {product1}")
+    st.subheader(f"Customer Review of {product1}")
     st.write(review["output"])
-    st.header(f"Customer Review of {product2}")
+    st.subheader(f"Customer Review of {product2}")
     review2_prompt = f"customer review of {product2}"
     review2 = execute_review1(review2_prompt)
     st.write(review2["output"])

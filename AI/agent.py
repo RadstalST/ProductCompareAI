@@ -5,7 +5,7 @@ from langchain.chains import ConversationChain
 
 from AI.tools import Tools
 from AI.prompt_template import prompt,plan_prompt,plan_features_compare,execute_features_compare,pros_cons_compare
-from AI.prompt_template import title_prompt,introduction_prompt,vs_paragraph_prompt,plan_review_product
+from AI.prompt_template import title_prompt,introduction_prompt,vs_paragraph_prompt,plan_review_product,execute_specific_feature
 
 
 class Agent():
@@ -95,6 +95,14 @@ class Agent():
             prompt=pros_cons_compare,
             output_key="output",
         )
+        self.specific_compare_chain = ConversationChain(
+            llm= self.llm,
+            memory = self.memory,
+            input_key="input",
+            prompt=execute_specific_feature,
+            output_key = "output"
+		)
+
 
     def execute(self,prompt):
         #formulate plan
@@ -121,6 +129,7 @@ class Agent():
         vs_paragraph = self.vs_paragraph_chain.run(topic = title)
 
 
+
         res = {
             "search_plan":search_plan,
             "plan_result":plan_result,
@@ -135,6 +144,10 @@ class Agent():
         return res
     def review(self,prompt):
         review = self.review_agent(prompt)
-        return review        
+        return review 
+
+    def feature(self,prompt):
+        feature_compare = self.specific_compare_chain(prompt)
+        return feature_compare   
 
 
