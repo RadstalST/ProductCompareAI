@@ -85,19 +85,55 @@ execute_features_compare = PromptTemplate(
     Make a comparison table of features of two products based on
     {chat_history}
     {input}
-    Output should be able to feed directly into json.loads() and to pd.DataFrame() function:
-    '''
-        <open_bracket_token>
-            "product": [product A, product B,...],
-            "eg. screen size": [10, 12,...],
-            "features_2": [comparison A, comaprison B,...],
-            "features_n-1": [comparison A, comaprison B,...],
-            "features_n": [comparison A, comaprison B,...],
-        <close_bracket_token>
-    '''
-
+    Output should be a table with product as header and features as rows and output will be in markdown format.
+    Example:
+    | Features | Product A | Product B |
+    | -------- | --------- | --------- |
+    | Feature1 |           |           |
+    | Feature2 |           |           |
+    | Feature3 |           |           |
+    | Feature4 |           |           |
+    | Price    |    122USD |    123USD |
     """
 )
 
 
+title_prompt = PromptTemplate(
+    input_variables=["topic", "chat_history"], # input = product name vs product name prompt
+    template="""
+    topic: {topic}
+    Make a clickbait title for the topic
+    based on:
+    {chat_history}
+    """
+)
 
+
+introduction_prompt = PromptTemplate(
+    input_variables=["title", "chat_history"],
+    template="""
+    title: {title}
+    Write an introduction paragraph for the title.
+    based on:
+    {chat_history}
+    """
+)
+
+vs_paragraph_prompt = PromptTemplate(
+    input_variables=["topic", "chat_history"],
+    template="""
+    topic: {topic}
+    comparison paragraphs for the topic for each product features in the table in markdown format.
+
+    Example:
+    1. **Feature1**
+
+    paragraph comparing Feature1 between product A and product B
+
+    2. ....
+    ...
+    3. ....
+    based on:
+    {chat_history}
+    """
+)

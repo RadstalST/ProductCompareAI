@@ -5,6 +5,7 @@ from langchain.chains import ConversationChain
 
 from AI.tools import Tools
 from AI.prompt_template import prompt,plan_prompt,plan_features_compare,execute_features_compare
+from AI.prompt_template import title_prompt,introduction_prompt,vs_paragraph_prompt
 
 
 class Agent():
@@ -53,6 +54,30 @@ class Agent():
             output_key="output",
         )
 
+        self.title_chain = ConversationChain(
+            llm=self.llm,
+            memory=self.memory,
+            input_key="topic",
+            prompt=title_prompt,
+            output_key="title",
+        )
+
+        self.introduction_chain = ConversationChain(
+            llm=self.llm,
+            memory=self.memory,
+            input_key="title",
+            prompt=introduction_prompt,
+            output_key="introduction",
+        )
+
+        self.vs_paragraph_chain = ConversationChain(
+            llm=self.llm,
+            memory=self.memory,
+            input_key="topic",
+            prompt=vs_paragraph_prompt,
+            output_key="vs_paragraph",
+        )
+
     def execute(self,prompt):
         #formulate plan
         # 1. generate plan based on input
@@ -66,11 +91,24 @@ class Agent():
 
         features_table = self.compare_plan_chain.run(input = features_compare_plan["output"])
 
+        # 4. create catchy title
+        title = self.title_chain.run(topic = prompt)
+
+        # 5. create introduction paragraph
+        introduction = self.introduction_chain.run(title = title)
+
+        # 6. create comparison paragraph
+        vs_paragraph = self.vs_paragraph_chain.run(topic = title)
+
 
         res = {
-            "search_plan":plan_result,
+            "search_plan":search_plan,
+            "plan_result":plan_result,
             "features_compare_plan":features_compare_plan,
-            "features_table":features_table
+            "features_table":features_table,
+            "title":title,
+            "introduction":introduction,
+            "vs_paragraph":vs_paragraph,
         }
 
         return res
