@@ -5,6 +5,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import json
+import json5
 from AI.agent import Agent
 
 
@@ -43,8 +44,8 @@ if submit_button:
     agent_res = execute_agent(prompt)
     st.write(agent_res)
 
-    comparison_df = pd.DataFrame(json.loads(
-        agent_res["features_table"].replace("Output:","").strip()
+    comparison_df = pd.DataFrame(json5.loads(
+        agent_res["features_table"].replace('\'',"\"" ).strip()
         )).set_index("product").T
     
     # st table
