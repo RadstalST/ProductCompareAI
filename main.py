@@ -1,9 +1,10 @@
 # create streamlit app
 
 
-import streamlit as st
+
 import pandas as pd
 import numpy as np
+import streamlit as st
 
 from AI.agent import Agent
 
@@ -15,6 +16,7 @@ if OPEN_AI_API_KEY:
 
 @st.cache_data #caching the function
 def execute_agent(prompt):
+	#agent = Agent(openai_api_key=OPEN_AI_API_KEY)
     agent_res = agent.execute(prompt)
     return agent_res
 
