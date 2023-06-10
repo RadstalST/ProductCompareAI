@@ -20,6 +20,10 @@ if OPEN_AI_API_KEY:
 def execute_agent(prompt):
     agent_res = agent.execute(prompt)
     return agent_res
+@st.cache_data
+def execute_review(prompt):
+	rev = agent.review(prompt)
+	return rev
 
 
 # Title of the app
@@ -43,6 +47,17 @@ if submit_button:
     st.divider()
     agent_res = execute_agent(prompt)
     st.write(agent_res)
+    review1 = f"customer review of {product1}"
+    review = execute_review(review1)
+    st.header(f"Customer Review of {product1}")
+    st.write(review["output"])
+    st.divider()
+	st.header(f"Customer Review of {product2}")
+    review2_prompt = f"customer review of {product2}"
+    review2 = execute_review(review2_prompt)
+    st.write(review2["output"])
+
+
 
     comparison_df = pd.DataFrame(json5.loads(
         agent_res["features_table"].replace('\'',"\"" ).strip()
@@ -52,4 +67,3 @@ if submit_button:
     st.table(comparison_df)
 
 
-# go get some data on the internet

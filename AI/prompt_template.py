@@ -99,5 +99,27 @@ execute_features_compare = PromptTemplate(
     """
 )
 
+plan_review_product = PromptTemplate(
+    input_variables=["input"],
+    template="""Prepare plan for task execution. (e.g. retrieve current date to find weather forecast)
+    base on:
+    {input}
+    things to keep in mind:
+    1. Access customer reviews website such as amazon.com, facebook.com
 
+    most of the time you will need to:
+    1. search for reviews on website
+    2. you need to find top reviews with most helpful information based on votes
+	3. Show reviews as a result
+    
+    Tools to use:+""" + tools_str + """
+
+    REMEMBER: Keep in mind that you don't have information about current date, temperature, informations after September 2021. Because of that you need to use tools to find them.
+
+        Output look like this:
+    '''
+        Product: {input}
+        Top reviews: [reviews of product]
+    """
+)
 
