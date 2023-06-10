@@ -65,7 +65,6 @@ if submit_button:
 
 
     # introduction section
-
     st.title(f"{agent_res['title']}")
 
     st.header(f"Introduction :") #might add catchy clickbait title
