@@ -35,7 +35,7 @@ if submit_button:
     st.write(f'Product 1: {product1}')
     st.write(f'Product 2: {product2}')
     st.write('Comparing the products...')
-    prompt = f"compare {product1} and  {product1}"
+    prompt = f"compare {product1} and  {product2}"
     st.write(prompt)
     st.divider()
     agent_res = execute_agent(prompt)
