@@ -122,6 +122,19 @@ title_prompt = PromptTemplate(
     """
 )
 
+plan_review_product = PromptTemplate(
+    input_variables=["input"],
+    template="""Prepare plan for task execution. (e.g. retrieve current date to find weather forecast)
+    base on:
+    {input}
+    things to keep in mind:
+    1. Access customer reviews website such as amazon.com, facebook.com
+
+    most of the time you will need to:
+    1. search for reviews on website
+    2. you need to find top reviews with most helpful information based on votes
+	3. Show reviews as a result
+    """)
 
 introduction_prompt = PromptTemplate(
     input_variables=["title", "chat_history"],

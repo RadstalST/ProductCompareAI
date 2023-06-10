@@ -5,7 +5,7 @@ from langchain.chains import ConversationChain
 
 from AI.tools import Tools
 from AI.prompt_template import prompt,plan_prompt,plan_features_compare,execute_features_compare,pros_cons_compare
-from AI.prompt_template import title_prompt,introduction_prompt,vs_paragraph_prompt
+from AI.prompt_template import title_prompt,introduction_prompt,vs_paragraph_prompt,plan_review_product
 
 
 class Agent():
@@ -14,6 +14,7 @@ class Agent():
         self.tools = Tools().get_tools()
         self.llm = ChatOpenAI(temperature=0,model=gpt_model_str,openai_api_key=openai_api_key)
         self.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+        self.llm_v2 = ChatOpenAI(temperature=0,model=gpt_model_str,openai_api_key=openai_api_key)
         # AGENTS
         self.agent = initialize_agent(
             agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
@@ -34,6 +35,15 @@ class Agent():
             max_iterations=max_iterations,
             prompt=plan_features_compare,
             memory=self.memory,
+        )
+
+        self.review_agent = initialize_agent(
+            agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+            tools=self.tools,
+            llm=self.llm_v2,
+            verbose=True, # verbose option is for printing logs (only for development)
+            max_iterations=max_iterations,
+            prompt=plan_review_product,
         )
 
         # prompt
@@ -123,3 +133,8 @@ class Agent():
         }
 
         return res
+    def review(self,prompt):
+        review = self.review_agent(prompt)
+        return review        
+
+
