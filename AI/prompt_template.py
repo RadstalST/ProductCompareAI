@@ -99,5 +99,19 @@ execute_features_compare = PromptTemplate(
     """
 )
 
+pros_cons_compare = PromptTemplate(
+    input_variables=["input","chat_history"],
+    template="""Discuss the pros and cons of the given topic based on the chat history:
+    Topic: 
+    {chat_history}
+    {input}
+    Pros:
+    - 
+
+    Cons:
+    - 
+"""
+)
+
 
 

@@ -51,5 +51,17 @@ if submit_button:
     # st table
     st.table(comparison_df)
 
+    # pro and cons section
+    st.subheader("Pros and Cons")
+    pros_cons = agent_res["pro_cons"]
+    pros_cons_list = pros_cons.split("\n\n")
+    for section in pros_cons_list:
+        if section.startswith("Pros:"):
+            st.subheader("Pros")
+            st.write(pros_cons_list[0].replace('Pros:\n',''))
+        elif section.startswith("Cons:"):
+            st.subheader("Cons")
+            st.write(pros_cons_list[1].replace('Pros:\n',''))
+            
 
 # go get some data on the internet

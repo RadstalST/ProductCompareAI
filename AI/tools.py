@@ -23,7 +23,7 @@ class Tools():
                 name="Wikipedia",
                 func=self.tools_engine["Wikipedia"].run,
                 description="Wikipedia is an online encyclopedia that serves as a valuable web search tool. It is a collaborative platform where users can create and edit articles on various topics. Wikipedia provides a wealth of information on a wide range of subjects, making it a go-to resource for general knowledge and background information. It is particularly useful for getting an overview of a topic, understanding basic concepts, or exploring historical events. However, since anyone can contribute to Wikipedia, the accuracy and reliability of its articles can vary. It is recommended to cross-reference information found on Wikipedia with other reliable sources, especially for more specialized or controversial subjects.",
-            ),
+            )
             # Tool(
             #     name="Google Search",
             #     func=self.tools_engine["Google Search"].run,

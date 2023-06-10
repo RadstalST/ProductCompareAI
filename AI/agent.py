@@ -4,7 +4,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationChain
 
 from AI.tools import Tools
-from AI.prompt_template import prompt,plan_prompt,plan_features_compare,execute_features_compare
+from AI.prompt_template import prompt,plan_prompt,plan_features_compare,execute_features_compare,pros_cons_compare
 
 
 class Agent():
@@ -53,6 +53,14 @@ class Agent():
             output_key="output",
         )
 
+        self.procons_plan_chain = ConversationChain(
+            llm=self.llm,
+            memory=self.memory,
+            input_key="input",
+            prompt=pros_cons_compare,
+            output_key="output",
+        )
+
     def execute(self,prompt):
         #formulate plan
         # 1. generate plan based on input
@@ -65,12 +73,15 @@ class Agent():
         features_compare_plan = self.features_agent(plan_result)
 
         features_table = self.compare_plan_chain.run(input = features_compare_plan["output"])
-
+    
+        # 4. Generate pro and cons
+        procons_result = self.procons_plan_chain.run(input= features_compare_plan["output"])
 
         res = {
             "search_plan":plan_result,
             "features_compare_plan":features_compare_plan,
-            "features_table":features_table
+            "features_table":features_table,
+            "pro_cons":procons_result
         }
 
         return res
