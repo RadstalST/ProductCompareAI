@@ -30,8 +30,8 @@ st.info('This app compares the products based on the features')
 
 #input
 with st.form(key='input_form'):
-    product1 = st.text_input('Enter the name of the product 1')
-    product2 = st.text_input('Enter the name of the product 2')
+    product1 = st.text_input('Enter the name of the product 1',value="apple vision pro")
+    product2 = st.text_input('Enter the name of the product 2',value="Meta Quest Pro")
     submit_button = st.form_submit_button(label='Submit')
 
 if submit_button:
@@ -43,14 +43,23 @@ if submit_button:
     st.write(prompt)
     st.divider()
     agent_res = execute_agent(prompt)
-    st.write(agent_res)
+    with st.expander("Debug"):
+        st.write(agent_res)
 
-    comparison_df = pd.DataFrame(json5.loads(
-        agent_res["features_table"].replace('\'',"\"" ).strip()
-        )).set_index("product").T
-    
-    # st table
-    st.table(comparison_df)
+    # introduction section
+
+    st.title(f"{agent_res['title']}")
+
+    st.header(f"Introduction :") #might add catchy clickbait title
+    st.write(agent_res["introduction"])
+    st.header(f"{product1} vs {product2}") #might add catchy clickbait title
+    st.write(agent_res["vs_paragraph"])
+    st.header(f"Features Comparison Table") 
+    st.write(f"Here is the comparison between {product1} and {product2}")
+    # comparison section
+    st.markdown(agent_res["features_table"].strip())
+
+
 
     # pro and cons section
     st.subheader("Pros and Cons")
