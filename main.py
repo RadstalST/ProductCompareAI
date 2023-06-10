@@ -15,7 +15,10 @@ with st.sidebar:
 
 if OPEN_AI_API_KEY:
     agent = Agent(openai_api_key=OPEN_AI_API_KEY)
-
+else:
+    st.error("Please enter the Open AI API Key")
+    st.stop()
+    
 @st.cache_data #caching the function
 def execute_agent(prompt):
 	#agent = Agent(openai_api_key=OPEN_AI_API_KEY)
