@@ -15,9 +15,7 @@ with st.sidebar:
 
 if OPEN_AI_API_KEY:
     agent = Agent(openai_api_key=OPEN_AI_API_KEY)
-else:
-    st.error("Please enter the Open AI API Key")
-    st.stop()
+
     
 @st.cache_data #caching the function
 def execute_agent(prompt):
@@ -36,7 +34,9 @@ with st.form(key='input_form'):
     product1 = st.text_input('Enter the name of the product 1',value="apple vision pro")
     product2 = st.text_input('Enter the name of the product 2',value="Meta Quest Pro")
     submit_button = st.form_submit_button(label='Submit')
-
+if not OPEN_AI_API_KEY:
+    st.error("Please enter the Open AI API Key")
+    st.stop()
 if submit_button:
     st.divider()
     st.write(f'Product 1: {product1}')
