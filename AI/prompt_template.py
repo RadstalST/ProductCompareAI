@@ -164,3 +164,16 @@ vs_paragraph_prompt = PromptTemplate(
     {chat_history}
     """
 )
+
+
+consider_budget_prompt = PromptTemplate(
+    input_variables=["budget", "chat_history"],
+    template = """
+    budget: {budget}
+    Please compare Product A and Product B based on their features, quality, and price.
+    What is the price of Product A and Product B? Which product is within my budget, and which one exceeds it?
+    If one product exceeds my budget, please provide the reason for going over budget. What features or qualities justify the higher price? Can you highlight any specific advantages or additional benefits of the product that might justify going over budget?
+    based on:
+    {chat_history}
+    """
+)
