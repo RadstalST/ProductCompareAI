@@ -97,6 +97,17 @@ execute_features_compare = PromptTemplate(
     """
 )
 
+execute_specific_feature = PromptTemplate(
+    input_variables=["input","chat_history"],
+    template="""
+    Make a comparison between two products based on 
+    {chat_history}
+    {input}
+    Output should be a short summary of the feature asked to be compare.
+    
+	"""
+)
+
 pros_cons_compare = PromptTemplate(
     input_variables=["input","chat_history"],
     template="""Discuss the pros and cons of the given topic based on the chat history:
@@ -122,7 +133,7 @@ title_prompt = PromptTemplate(
     """
 )
 
-plan_review_product = PromptTemplate(
+plan_review_product1 = PromptTemplate(
     input_variables=["input"],
     template="""Prepare plan for task execution. (e.g. retrieve current date to find weather forecast)
     base on:
@@ -131,10 +142,37 @@ plan_review_product = PromptTemplate(
     1. Access customer reviews website such as amazon.com, facebook.com
 
     most of the time you will need to:
-    1. search for reviews on website
-    2. you need to find top reviews with most helpful information based on votes
-	3. Show reviews as a result
+    1. search for descriptive reviews on website
+    2. Retrieve the customer reviews with excerpts or quotes from actual reviews
+	Tools to use:+""" + tools_str + """
+	REMEMBER: Keep in mind that you don't have information about current date, temperature, informations after September 2021. Because of that you need to use tools to find them.
+
+        Output look like this:
+    '''
+        Product: {input}
+        Top reviews: [summary review of product]
     """)
+
+plan_review_product = PromptTemplate(
+    input_variables=["input"],
+    template="""
+    Your Objective is to find customer reviews based on {input}
+    Instructions:
+    1. Access customer reviews on website such as amazon.com
+    2. Search for descriptive reviews of product on website
+    3. Summarize key sentiment of customer about the product
+    Tools to use:+""" + tools_str+ """
+    REMEMBER: 
+        1.Keep in mind that you don't have information about current date, temperature, informations after September 2021. Because of that you need to use tools to find them.
+        2. You do not need to make purchase decisions.
+
+
+        Output look like this:
+		'''
+		Product:{input}
+		Reviews: [Summary reviews of product]
+	"""
+)
 
 introduction_prompt = PromptTemplate(
     input_variables=["title", "chat_history"],
@@ -160,6 +198,21 @@ vs_paragraph_prompt = PromptTemplate(
     2. ....
     ...
     3. ....
+    based on:
+    {chat_history}
+    """
+)
+
+
+
+
+consider_budget_prompt = PromptTemplate(
+    input_variables=["budget", "chat_history"],
+    template = """
+    budget: {budget}
+    Please compare Product A and Product B based on their features, quality, and price.
+    What is the price of Product A and Product B? Which product is within my budget, and which one exceeds it?
+    If one product exceeds my budget, please provide the reason for going over budget. What features or qualities justify the higher price? Can you highlight any specific advantages or additional benefits of the product that might justify going over budget?
     based on:
     {chat_history}
     """
