@@ -4,7 +4,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationChain
 
 from AI.tools import Tools
-from AI.prompt_template import prompt,plan_prompt,plan_features_compare,execute_features_compare,pros_cons_compare
+from AI.prompt_template import prompt,plan_prompt,plan_features_compare,execute_features_compare,pros_cons_compare,consider_budget_prompt
 from AI.prompt_template import title_prompt,introduction_prompt,vs_paragraph_prompt,plan_review_product,execute_specific_feature
 
 
@@ -104,7 +104,31 @@ class Agent():
 		)
 
 
-    def execute(self,prompt):
+        self.consider_budget_chain = ConversationChain(
+            llm=self.llm,
+            memory=self.memory,
+            input_key="budget",
+            prompt=consider_budget_prompt,
+            output_key="output",
+        )
+        self.specific_compare_chain = ConversationChain(
+            llm= self.llm,
+            memory = self.memory,
+            input_key="input",
+            prompt=execute_specific_feature,
+            output_key = "output"
+		)
+
+
+        self.consider_budget_chain = ConversationChain(
+            llm=self.llm,
+            memory=self.memory,
+            input_key="budget",
+            prompt=consider_budget_prompt,
+            output_key="output",
+        )
+
+    def execute(self,prompt,budget=0):
         #formulate plan
         # 1. generate plan based on input
         plan_result = self.plan_chain.run(input = prompt) #output is a string
@@ -129,6 +153,8 @@ class Agent():
         vs_paragraph = self.vs_paragraph_chain.run(topic = title)
 
 
+        # 7. consider budget
+        budget_result = self.consider_budget_chain.run(budget = budget)
 
         res = {
             "search_plan":search_plan,
@@ -139,6 +165,7 @@ class Agent():
             "title":title,
             "introduction":introduction,
             "vs_paragraph":vs_paragraph,
+            "budget_consider":budget_result
         }
 
         return res
