@@ -1,4 +1,6 @@
-# Project
+# HyperCompare AI
+
+![Project Cover](images/Project.png)
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://radstalst-productcompareai-main-qbamny.streamlit.app/)
 
 ## Description
